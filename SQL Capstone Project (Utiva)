@@ -1,0 +1,173 @@
+CREATE TABLE int_breweries(
+	SALES_ID int,
+	SALES_REP varchar,
+	EMAILS varchar,
+	BRANDS	varchar,
+	PLANT_COST int,
+	UNIT_PRICE	int,
+	QUANTITY	int,
+	COST	bigint,
+	PROFIT	bigint,
+	COUNTRIES	varchar,
+	REGION varchar,
+	MONTHS	char(11),
+	YEARS int
+);
+
+SELECT * FROM int_breweries
+
+
+									---Section A (PROFIT ANALYSIS )
+---Qeustion 1---
+SELECT SUM(profit) FROM int_breweries   ---#105,587,420---
+
+---QUESTION 2---
+---ANGLOPHONE COUNTRIES---
+ SELECT SUM(profit) FROM int_breweries
+ WHERE countries IN ('Ghana','Nigeria') ---$42,389,260
+ 
+---FRANCOPHONE COUNTRIES---
+SELECT SUM(profit) FROM int_breweries
+WHERE NOT countries IN ('Ghana','Nigeria') ---$63,198,160---
+   
+ ---Question 3---
+SELECT SUM(profit), countries, years FROM int_breweries
+WHERE years = 2019
+GROUP BY countries,years
+ORDER BY SUM(profit) DESC
+ ---Ghana generated the highest revenue of $7,144,070 in 2019---
+  
+ ---Question 4---
+SELECT SUM(profit), years FROM int_breweries
+GROUP BY years
+ORDER BY SUM(profit) DESC 
+--- 2017 Was the year with the highest profit of $38,503,320---
+
+---Question 5---
+SELECT MIN(profit), months,years FROM int_breweries
+GROUP BY months, years
+ORDER BY MIN(profit) 
+---DECEMBER 2017 was the month with the least income of about $35,000---
+
+---Question 6---
+SELECT MIN(profit), months, years FROM int_breweries
+WHERE months = 'December' and years = 2018
+GROUP BY months,years
+ORDER BY MIN(profit) DESC
+--- In the month of December 2018 the minimum profit was $38,150---
+
+---Question 7---
+SELECT months, SUM(profit)/ 30020250 * 100 FROM int_breweries
+WHERE years = 2019
+GROUP BY months
+
+---Question 8---
+SELECT SUM(profit), brands, countries FROM int_breweries
+WHERE countries = 'Senegal'
+GROUP BY brands, countries
+ORDER BY SUM(profit) DESC
+--- Castle lite was the brand with the highest profit in senegal with a total of $7,012,980 ---
+
+
+                     		---SECTION B (BRAND ANALYSIS)---
+ 
+ ----Question 1---
+SELECT brands, SUM(quantity), years, countries FROM int_breweries
+WHERE NOT countries IN('Nigeria','Ghana') AND years IN(2018,2019)
+GROUP BY brands, years, countries
+ORDER BY SUM(quantity) DESC
+LIMIT  3
+/*The top three brads that where consume in the past two years in the francophone countries are;
+ 			12,465 quantities of Eagles larger where consumed in Benin in the year 2018
+			12,233 quantities of Hero where consumde in Benin in the year 2018
+			11,521 quantities of Trophy where consumed in Benin in the year 2018*/
+			
+---Question 2---
+SELECT brands, SUM(quantity), countries FROM int_breweries
+WHERE countries = 'Ghana'
+GROUP BY brands, countries
+ORDER BY SUM(quantity) DESC
+LIMIT  2
+---The top 2 brands that are been consumed by customers in Ghana are EAGLES LARGER and CASTLE LITE---
+
+---Question 3----
+SELECT brands, SUM(quantity), countries,years FROM int_breweries
+WHERE NOT brands IN ('beta malt','grand malt') AND countries = 'Nigeria'
+GROUP BY brands,countries,years
+ORDER BY SUM(quantity) DESC
+
+---Question 4---
+SELECT brands, countries, years, SUM(quantity) FROM int_breweries
+WHERE countries in ('Nigeria','Ghana') AND brands IN ('beta malt','grand malt') AND years IN (2018,2019)
+GROUP BY brands, countries, years
+ORDER BY SUM(quantity)DESC;
+
+---Question 5---
+SELECT brands, countries, years, SUM(quantity) FROM int_breweries
+WHERE countries = 'Nigeria' AND years = 2019
+GROUP BY countries, years, brands
+ORDER BY SUM (quantity) DESC
+--- Hero sold the highest in 2019---
+
+---Question 6---
+SELECT brands, countries,region,SUM(quantity) FROM int_breweries
+WHERE countries = 'Nigeria' AND region = 'southsouth'
+GROUP BY brands, countries,region
+ORDER BY SUM(quantity) DESC;
+--- The Farourite Brand in the south south of Nigeria is EAGLE LAGER---
+
+---Question 7---
+SELECT brands, countries FROM int_breweries
+WHERE NOT brands IN ('beta malt','grand malt') AND countries = 'Nigeria'
+GROUP BY brands,countries
+----The Bear consumed in Nigeria are; Trophy, Hero, Budweiser, Eagle Lager, Castle Lite---
+
+----Question 8---
+SELECT brands, countries, region, SUM(quantity) FROM int_breweries
+WHERE countries = 'Nigeria' AND brands = 'budweiser'
+GROUP BY brands, countries,region
+ORDER BY SUM(quantity)DESC
+/* The Level of comsumption of budweiser in the varous regions in Nigeria are;
+			West            4,620
+			North Central   4,498
+			South South     4,328
+			North East      4,328
+			North West      4,274
+			South East      4,113
+*/
+
+---Question 9---
+SELECT brands, countries, years, region, SUM(quantity) FROM int_breweries
+WHERE countries = 'Nigeria' AND brands = 'budweiser' AND years = 2019
+GROUP BY brands, countries,region, years
+ORDER BY SUM(quantity) DESC;
+/* The Level of comsumption of budweiser in 2019 by region in Nigeria are;
+            South East     1,821
+			North East	   990
+			North West     948
+			West           884
+			South South    847
+*/
+
+
+             ---SECTION C (COUNTRIES ANALYSIS)---
+---Question 1---
+SELECT countries, SUM(quantity) FROM int_breweries
+WHERE NOT brands IN ('beta malt','grand malt')
+GROUP BY countries,brands 
+ORDER BY SUM(profit) DESC;
+-----The country with the highest number of comsumption of beer is Senegal with a total of 25,974 quantity---
+
+---Question 2---
+SELECT countries, brands, sales_rep, SUM(profit) FROM int_breweries
+WHERE countries = 'Senegal' AND brands = 'budweiser'
+GROUP BY countries,brands,sales_rep
+ORDER BY SUM(profit) DESC;
+--- Jones is the highest sale personel in Senegal---
+
+---Question 3---
+SELECT countries, SUM(profit) FROM int_breweries
+WHERE months IN ('October','November','December') AND years = 2019
+GROUP BY countries, months, years
+ORDER BY SUM(profit) DESC;
+---Ghana is the country with the highest profit of about $1,040,820 in the forth quarter of 2019---
